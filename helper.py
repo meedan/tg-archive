@@ -1,6 +1,7 @@
 import os
 from telethon.sync import TelegramClient
 from telethon.errors import PhoneMigrateError
+from util import read_group_names
 
 # Initialize session and phone number variables
 session_name = "session"
@@ -35,10 +36,10 @@ import shutil
 import os
 
 # List of group_names
-group_names = ["osama1984osama", "moigovps", "newpress1"]
+group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")
 
 
-# Loop through the list of group_names
+# Loop through the list of group_names+1
 for group_name in group_names:
     # Delete the directory if it exists
     if os.path.exists(group_name):
