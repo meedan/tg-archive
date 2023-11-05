@@ -29,7 +29,6 @@ def authenticate():
 # Authenticate and store the session
 client = authenticate()
 
-
 import subprocess
 import re
 import shutil
@@ -38,22 +37,28 @@ import os
 # List of group_names
 group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")
 
+# Create a 'data' directory if it doesn't exist
+if not os.path.exists('data'):
+    os.makedirs('data')
 
 # Loop through the list of group_names+1
 for group_name in group_names:
+    # Create a directory under the 'data' directory for each group_name
+    group_directory = os.path.join('data', group_name)
+
     # Delete the directory if it exists
-    if os.path.exists(group_name):
-        shutil.rmtree(group_name)
+    if os.path.exists(group_directory):
+        shutil.rmtree(group_directory)
 
     # Create a new site and edit config.yaml
-    subprocess.run(["tg-archive", "--new", f"--path={group_name}"])
+    subprocess.run(["tg-archive", "--new", f"--path={group_directory}"])
 
     # Copy the session file to the group_name directory
     session_file = f"{session_name}.session"
-    shutil.copy(session_file, os.path.join(group_name, session_file))
+    shutil.copy(session_file, os.path.join(group_directory, session_file))
 
     # Change the working directory to the created directory
-    os.chdir(group_name)
+    os.chdir(group_directory)
 
     # Substitute the group field in config.yaml
     config_path = "config.yaml"
@@ -72,8 +77,8 @@ for group_name in group_names:
     # Sync data into data.sqlite
     subprocess.run(["tg-archive", "--sync"])
 
-    # Change the working directory back to the previous directory
-    os.chdir("..")
+    # Change the working directory back to the 'data' directory
+    os.chdir('../..')
     
     print("completed!!\n")
 
