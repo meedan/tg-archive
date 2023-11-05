@@ -2,6 +2,7 @@ __pycache__/
 data/
 session.session
 *.session-journal
+*.xlsx
 
 
 
