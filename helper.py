@@ -1,11 +1,14 @@
 import os
+import asyncio
 from telethon.sync import TelegramClient
 from telethon.errors import PhoneMigrateError
-from util import read_group_names
+from util import read_group_names, get_start_id
+import nest_asyncio
+nest_asyncio.apply()
 
 # Initialize session and phone number variables
 session_name = "session"
-phone_number = None
+phone_number = +12244202474
 
 # Function to authenticate the user and store the session
 def authenticate():
@@ -35,7 +38,7 @@ import shutil
 import os
 
 # List of group_names
-group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")
+group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")[0:1]
 
 # Create a 'data' directory if it doesn't exist
 if not os.path.exists('data'):
@@ -73,9 +76,13 @@ for group_name in group_names:
     
     with open(config_path, 'w') as config_file:
         config_file.write(config_content)
+        
+    # Get the message id to start fetching by date
+    date_str = "2023-10-03"
+    start_id = asyncio.run(get_start_id(date_str, group_name))
 
     # Sync data into data.sqlite
-    subprocess.run(["tg-archive", "--sync"])
+    subprocess.run(["tg-archive", "-from-id", f"{start_id}", "--sync"])
 
     # Change the working directory back to the 'data' directory
     os.chdir('../..')

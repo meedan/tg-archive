@@ -34,3 +34,30 @@ def read_group_names(file_path):
 file_path = "MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx"
 values_list = read_group_names(file_path)
 print(values_list)
+
+
+
+import os
+import asyncio
+from telethon.sync import TelegramClient
+from datetime import datetime
+
+async def get_start_id(date_str, group_name):
+    api_id = os.environ.get("telegram_api_id")
+    api_hash = os.environ.get("telegram_api_hash")
+
+    try:
+        target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+
+        async with TelegramClient('session', api_id, api_hash) as client:
+            try:
+                entity = await client.get_entity(group_name)
+                async for message in client.iter_messages(entity, limit=None):
+                    if message.date.date() == target_date:
+                        return message.id
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+    except ValueError:
+        print("Invalid date format. Please use YYYY-MM-DD format.")
+    return None
+
