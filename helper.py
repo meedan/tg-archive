@@ -8,7 +8,7 @@ nest_asyncio.apply()
 
 # Initialize session and phone number variables
 session_name = "session"
-phone_number = +12244202474
+phone_number = None
 
 # Function to authenticate the user and store the session
 def authenticate():
@@ -38,7 +38,7 @@ import shutil
 import os
 
 # List of group_names
-group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")[3:4]
+group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")
 
 # Create a 'data' directory if it doesn't exist
 if not os.path.exists('data'):
