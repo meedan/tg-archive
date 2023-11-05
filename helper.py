@@ -38,7 +38,7 @@ import shutil
 import os
 
 # List of group_names
-group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")[0:1]
+group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")[3:4]
 
 # Create a 'data' directory if it doesn't exist
 if not os.path.exists('data'):
@@ -87,7 +87,7 @@ for group_name in group_names:
     # Change the working directory back to the 'data' directory
     os.chdir('../..')
     
-    print("completed!!\n")
+    print(f"Completed fetching group: {group_name}\n")
 
     # Build the static site
     # subprocess.run(["tg-archive", "--build"])
