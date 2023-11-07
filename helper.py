@@ -38,7 +38,8 @@ import shutil
 import os
 
 # List of group_names
-group_names = read_group_names("MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx")
+# group_names = read_group_names(input("Enter the path of the file which contains groupchat urls:"))
+group_names = read_group_names(os.environ.get("file_path"))
 
 # Create a 'data' directory if it doesn't exist
 if not os.path.exists('data'):
