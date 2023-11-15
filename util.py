@@ -1,6 +1,6 @@
 import openpyxl
 
-def read_group_names(file_path):
+def read_group_names_xls(file_path):
     sheetname = "Telegram"
     column_name = "Source ID"
     values = []
@@ -30,10 +30,19 @@ def read_group_names(file_path):
     values = [url.split('/')[-1] for url in values]
     return values
 
-# Example usage
-file_path = "MASTER_NAWA_GAZA_Sources_2023_data_collecting.xlsx"
-values_list = read_group_names(file_path)
-print(values_list)
+
+def read_group_names_txt(file_path):
+    groupnames = []
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                parts = line.strip().split('/')
+                if len(parts) >= 3:
+                    username = parts[3]
+                    groupnames.append(username)
+    except FileNotFoundError:
+        print(f"File not found: {file_path}")
+    return groupnames
 
 
 
@@ -41,17 +50,17 @@ import os
 import asyncio
 from telethon.sync import TelegramClient
 from datetime import datetime
+
+
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
 from telegram import Update
-from datetime import datetime
 
-async def get_start_id(update: Update, date_str, group_name):
+async def get_start_id(date_str, group_name):
     api_id = os.environ.get("telegram_api_id")
     api_hash = os.environ.get("telegram_api_hash")
 
     try:
         target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-        messages = update.message.bot.get_chat(chat_id).get_messages(filter=Filters.date(target_date))
 
         async with TelegramClient('session', api_id, api_hash) as client:
             try:
