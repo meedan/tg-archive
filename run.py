@@ -6,7 +6,7 @@ import re
 import shutil
 from telethon.sync import TelegramClient
 from telethon.errors import PhoneMigrateError
-from util import read_group_names_txt, get_start_id
+from util import read_group_names_txt
 import nest_asyncio
 
 nest_asyncio.apply()
@@ -47,8 +47,10 @@ client = authenticate()
 
 
 # List of group_names
-# group_names = read_group_names(input("Enter the path of the file which contains groupchat urls:"))
-group_names = read_group_names_txt('chatnames.txt')[:1]
+num_groups = config["number_of_groups"]
+if num_groups != 0:
+    group_names = read_group_names_txt('chatnames.txt')[:num_groups]
+else: group_names = read_group_names_txt('chatnames.txt')
 
 # Create a 'data' directory if it doesn't exist
 if not os.path.exists('data'):
