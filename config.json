@@ -1,0 +1,11 @@
+{
+    "telegram_api_id": "...",
+    "telegram_api_hash": "...",
+    "phone_number" : "+1...",
+    "fetching_limit": "20", 
+    "fetching_batchsize": "20", 
+    "number_of_groups": 2,
+    "start_date_str": "2023-10-07"
+  }
+
+  

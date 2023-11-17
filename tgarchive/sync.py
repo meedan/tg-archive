@@ -6,6 +6,7 @@ import os
 import tempfile
 import shutil
 import time
+import datetime
 
 from PIL import Image
 from telethon import TelegramClient, errors, sync
@@ -31,18 +32,19 @@ class Sync:
         if not os.path.exists(self.config["media_dir"]):
             os.mkdir(self.config["media_dir"])
 
-    def sync(self, ids=None, from_id=None):
+    def sync(self, ids=None, from_date=None):
         """
         Sync syncs messages from Telegram from the last synced message
         into the local SQLite DB.
         """
 
+        from_date = datetime.strptime(from_date, '%Y-%m-%d').date()
         if ids:
             last_id, last_date = (ids, None)
             logging.info("fetching message id={}".format(ids))
-        elif from_id:
-            last_id, last_date = (from_id, None)
-            logging.info("fetching from last message id={}".format(last_id))
+        elif from_date:
+            last_id, last_date = (None, from_date)
+            logging.info("fetching from last message date={}".format(last_date))
         else:
             last_id, last_date = self.db.get_last_message_id()
             logging.info("fetching from last message id={} ({})".format(
@@ -54,7 +56,7 @@ class Sync:
         while True:
             has = False
             for m in self._get_messages(group_id,
-                                        offset_id=last_id if last_id else 0,
+                                        offset_date=last_date if last_date else None,
                                         ids=ids):
                 if not m:
                     continue
@@ -141,8 +143,8 @@ class Sync:
     def finish_takeout(self):
         self.client.__exit__(None, None, None)
 
-    def _get_messages(self, group, offset_id, ids=None) -> Message:
-        messages = self._fetch_messages(group, offset_id, ids)
+    def _get_messages(self, group, offset_date, ids=None) -> Message:
+        messages = self._fetch_messages(group, offset_date, ids)
         # https://docs.telethon.dev/en/latest/quick-references/objects-reference.html#message
         for m in messages:
             if not m or not m.sender:
@@ -184,13 +186,13 @@ class Sync:
                 media=med
             )
 
-    def _fetch_messages(self, group, offset_id, ids=None) -> Message:
+    def _fetch_messages(self, group, offset_date, ids=None) -> Message:
         try:
             if self.config.get("use_takeout", False):
                 wait_time = 0
             else:
                 wait_time = None
-            messages = self.client.get_messages(group, offset_id=offset_id,
+            messages = self.client.get_messages(group, offset_date=offset_date,
                                                 limit=self.config["fetch_batch_size"],
                                                 wait_time=wait_time,
                                                 ids=ids,
