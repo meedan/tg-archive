@@ -3,7 +3,8 @@ data/
 session.session
 *.session-journal
 *.xlsx
-
+build/
+tg_archive.egg-info/
 
 
 

@@ -20,11 +20,11 @@ setup(
     long_description_content_type="text/markdown",
     author="Kailash Nadh",
     author_email="kailash@nadh.in",
-    url="https://github.com/knadh/tg-archive",
+    url="https://github.com/meedan/tg-archive/tree/eugenia-dev2",
     packages=['tgarchive'],
     install_requires=requirements(),
     include_package_data=True,
-    download_url="https://github.com/knadh/tg-archive",
+    download_url="https://github.com/meedan/tg-archive/tree/eugenia-dev2",
     license="MIT License",
     entry_points={
         'console_scripts': [
