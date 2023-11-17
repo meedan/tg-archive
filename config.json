@@ -1,7 +1,7 @@
 {
-    "telegram_api_id": "25695933",
-    "telegram_api_hash": "f6ae166f67e9f5b078e6bfa3cf82903e",
-    "phone_number" : "+12244202474",
+    "telegram_api_id": "/",
+    "telegram_api_hash": "/",
+    "phone_number" : "+1/",
     "fetching_limit": "20",
     "fetching_batchsize": "10",
     "date_str": "2023-10-03"
