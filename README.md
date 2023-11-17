@@ -7,6 +7,7 @@ Original Repo: https://github.com/knadh/tg-archive
 ## Usage Steps:
 
 1. **Modify `config.json`:** 
+
     Update the `config.json` file with essential information:
 
     ```json
@@ -17,7 +18,7 @@ Original Repo: https://github.com/knadh/tg-archive
         "fetching_limit": "Max_messages_to_fetch_across_all_batches",
         "fetching_batchsize": "Number_of_messages_to_fetch_in_one_batch (<2000)",
         "number_of_groups": "Specify_0_for_all_groups_in_the_txt_files",
-        "date_str": "YYYY-MM-DD"
+        "start_date_str": "YYYY-MM-DD"
     }
     ```
 

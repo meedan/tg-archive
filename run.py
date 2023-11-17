@@ -90,7 +90,7 @@ for group_name in group_names:
         config_file.write(config_content)
         
     # Get the message id to start fetching by date
-    date_str = config["date_str"]
+    date_str = config["start_date_str"]
 
     # Sync data into data.sqlite
     subprocess.run(["tg-archive", "-from-date", f"{date_str}", "--sync"])
