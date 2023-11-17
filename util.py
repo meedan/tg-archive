@@ -1,4 +1,8 @@
 import openpyxl
+import json
+
+with open('config.json', 'r') as json_file:
+    config = json.load(json_file)
 
 def read_group_names_xls(file_path):
     sheetname = "Telegram"
@@ -52,12 +56,16 @@ from telethon.sync import TelegramClient
 from datetime import datetime
 
 
-from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
-from telegram import Update
+from telegram.ext import Updater, MessageHandler, CommandHandler
+import telegram
+
 
 async def get_start_id(date_str, group_name):
-    api_id = os.environ.get("telegram_api_id")
-    api_hash = os.environ.get("telegram_api_hash")
+    date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    print(telegram.Message(date = date, chat = group_name))
+    api_id = config['telegram_api_id']
+    api_hash = config["telegram_api_hash"]
+    
 
     try:
         target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
@@ -73,4 +81,3 @@ async def get_start_id(date_str, group_name):
     except ValueError:
         print("Invalid date format. Please use YYYY-MM-DD format.")
     return None
-

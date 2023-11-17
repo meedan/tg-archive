@@ -77,8 +77,8 @@ def main():
                    dest="sync", help="sync data from telegram group to the local DB")
     s.add_argument("-id", "--id", action="store", type=int, nargs="+",
                    dest="id", help="sync (or update) messages for given ids")
-    s.add_argument("-from-id", "--from-id", action="store", type=int,
-                   dest="from_id", help="sync (or update) messages from this id to the latest")
+    s.add_argument("-from-date", "--from-date", action="store", type=str,
+                   dest="from_date", help="sync (or update) messages from this date to the latest")
 
     b = p.add_argument_group("build")
     b.add_argument("-b", "--build", action="store_true",
@@ -127,8 +127,8 @@ def main():
         # Import because the Telegram client import is quite heavy.
         from .sync import Sync
 
-        if args.id and args.from_id and args.from_id > 0:
-            logging.error("pass either --id or --from-id but not both")
+        if args.id and args.from_date:
+            logging.error("pass either --id or --from-date but not both")
             sys.exit(1)
 
         cfg = get_config(args.config)
@@ -139,7 +139,7 @@ def main():
         ))
         try:
             s = Sync(cfg, args.session, DB(args.data))
-            s.sync(args.id, args.from_id)
+            s.sync(args.id, args.from_date)
         except KeyboardInterrupt as e:
             logging.info("sync cancelled manually")
             if cfg.get("use_takeout", False):

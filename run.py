@@ -1,20 +1,33 @@
 import os
+import json
 import asyncio
+import subprocess
+import re
+import shutil
 from telethon.sync import TelegramClient
 from telethon.errors import PhoneMigrateError
-from util import read_group_names, get_start_id
+from util import read_group_names_txt, get_start_id
 import nest_asyncio
+
 nest_asyncio.apply()
+
+
+# Load config file
+with open('config.json', 'r') as json_file:
+    config = json.load(json_file)
+
 
 # Initialize session and phone number variables
 session_name = "session"
-phone_number = None
+phone_number = config["phone_number"]
+
+
 
 # Function to authenticate the user and store the session
 def authenticate():
     global phone_number
-    api_id = os.environ.get("telegram_api_id")
-    api_hash = os.environ.get("telegram_api_hash")
+    api_id = config["telegram_api_id"]
+    api_hash = config["telegram_api_hash"]
 
     if not phone_number:
         phone_number = input("Please enter your phone (or bot token): ")
@@ -32,14 +45,10 @@ def authenticate():
 # Authenticate and store the session
 client = authenticate()
 
-import subprocess
-import re
-import shutil
-import os
 
 # List of group_names
 # group_names = read_group_names(input("Enter the path of the file which contains groupchat urls:"))
-group_names = read_group_names(os.environ.get("file_path"))
+group_names = read_group_names_txt('chatnames.txt')[:1]
 
 # Create a 'data' directory if it doesn't exist
 if not os.path.exists('data'):
@@ -72,18 +81,17 @@ for group_name in group_names:
         config_content = re.sub(r'group: .*', f'group: "{group_name}"', config_content)
 
         # Update fetch_batch_size and fetch_limit
-        config_content = re.sub(r'fetch_batch_size: 2000', 'fetch_batch_size: 10', config_content)
-        config_content = re.sub(r'fetch_limit: 0', 'fetch_limit: 20', config_content)
+        config_content = re.sub(r'fetch_batch_size: 2000', f'fetch_batch_size: {config["fetching_batchsize"]}', config_content)
+        config_content = re.sub(r'fetch_limit: 0', f'fetch_limit: {config["fetching_limit"]}', config_content)
     
     with open(config_path, 'w') as config_file:
         config_file.write(config_content)
         
     # Get the message id to start fetching by date
-    date_str = "2023-10-03"
-    start_id = asyncio.run(get_start_id(date_str, group_name))
+    date_str = config["date_str"]
 
     # Sync data into data.sqlite
-    subprocess.run(["tg-archive", "-from-id", f"{start_id}", "--sync"])
+    subprocess.run(["tg-archive", "-from-date", f"{date_str}", "--sync"])
 
     # Change the working directory back to the 'data' directory
     os.chdir('../..')
